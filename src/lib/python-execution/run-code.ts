@@ -3,9 +3,7 @@ import { loadPyodide } from 'pyodide'
 import { Timer, Timings } from '../utils/timer'
 import { RunPythonCodeInput } from './types'
 
-import 'pyodide/pyodide.asm.js'
-
-export async function runPythonCode({ code }: RunPythonCodeInput): Promise<{
+export async function runPythonCode({ code, auto_install_packages }: RunPythonCodeInput): Promise<{
   result:
     | {
         status: 'success'
@@ -37,10 +35,11 @@ export async function runPythonCode({ code }: RunPythonCodeInput): Promise<{
     })
     timer.log('Loaded pyodide')
 
-    const packages = await pyodide.loadPackagesFromImports(code)
-    timer.log('Loaded packages from imports')
-
-    console.log('Found packages', packages)
+    if (auto_install_packages) {
+      const packages = await pyodide.loadPackagesFromImports(code)
+      timer.log('Loaded packages from imports')
+      console.log('Found & installed packages', packages)
+    }
 
     const resultProxy = await pyodide.runPythonAsync(code)
     timer.log('Ran python code')
