@@ -3,6 +3,8 @@ import { loadPyodide } from 'pyodide'
 import { Timer, Timings } from '../utils/timer'
 import { RunPythonCodeInput } from './types'
 
+import 'pyodide/pyodide.asm.js'
+
 export async function runPythonCode({ code }: RunPythonCodeInput): Promise<{
   result:
     | {
