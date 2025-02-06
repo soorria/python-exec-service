@@ -14,6 +14,8 @@ export class Timer {
       throw new Error('Timer already started')
     }
 
+    console.log('Starting timer')
+
     this.startTime = process.hrtime()
     this.lastMeasuredTime = this.startTime
   }
@@ -29,20 +31,28 @@ export class Timer {
       endTime[1] - this.lastMeasuredTime[1],
     ] as const
 
+    console.log(
+      `[${label}] ${Timer.convertToMs(duration).toFixed(
+        2
+      )}ms from start. Total: ${Timer.convertToMs(endTime)}ms`
+    )
+
     this.timings[label] = duration
     this.lastMeasuredTime = endTime
   }
 
   end(): Timings {
+    if (!this.startTime) {
+      throw new Error('Timer not started')
+    }
+
     if (this.ended) {
       throw new Error('Timer already ended')
     }
 
     this.ended = true
 
-    if (!this.startTime) {
-      throw new Error('Timer not started')
-    }
+    console.log('Ending timer')
 
     const endTime = process.hrtime()
     const duration = [endTime[0] - this.startTime[0], endTime[1] - this.startTime[1]] as const

@@ -5,7 +5,7 @@ const app = createApp()
 
 serve(
   {
-    fetch: app.fetch,
+    fetch: app.basePath('/api').fetch,
     port: parseInt(process.env.PORT ?? '8000') || 8000,
   },
   (info) => {
