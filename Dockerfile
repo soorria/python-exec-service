@@ -12,4 +12,4 @@ RUN pnpm install --frozen-lockfile
 
 COPY . .
 
-CMD ['npm', 'run', 'start-bad']
+CMD npm run start-bad

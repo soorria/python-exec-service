@@ -13,16 +13,16 @@ export function createApp() {
   })
 
   app.post('/v1/run-python-code', vValidator('json', runPythonCodeInputSchema), async (c) => {
-    const { result, timings } = await runPythonCode(c.req.valid('json'))
+    const { result, ...rest } = await runPythonCode(c.req.valid('json'))
 
     return c.json({
       ...result,
-      timings,
+      ...rest,
     })
   })
 
   app.onError((err, c) => {
-    console.log(err)
+    console.log('unexpected error', err)
 
     return c.json(
       {

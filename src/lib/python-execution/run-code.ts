@@ -16,15 +16,31 @@ export async function runPythonCode({ code }: RunPythonCodeInput): Promise<{
         error: unknown
       }
   timings: Timings
+  stdout: string[]
+  stderr: string[]
 }> {
   const global = createFakeJsGlobalForPythonCode()
   const timer = new Timer()
+  const stdout: string[] = []
+  const stderr: string[] = []
+
   try {
     timer.start()
     const pyodide = await loadPyodide({
       jsglobals: global,
+      stdout: (text) => {
+        stdout.push(text)
+      },
+      stderr: (text) => {
+        stderr.push(text)
+      },
     })
     timer.log('Loaded pyodide')
+
+    const packages = await pyodide.loadPackagesFromImports(code)
+    timer.log('Loaded packages from imports')
+
+    console.log('Found packages', packages)
 
     const resultProxy = await pyodide.runPythonAsync(code)
     timer.log('Ran python code')
@@ -41,6 +57,8 @@ export async function runPythonCode({ code }: RunPythonCodeInput): Promise<{
         data: result,
       },
       timings: timer.end(),
+      stdout,
+      stderr,
     }
   } catch (e) {
     return {
@@ -49,6 +67,8 @@ export async function runPythonCode({ code }: RunPythonCodeInput): Promise<{
         error: e,
       },
       timings: timer.end(),
+      stdout,
+      stderr,
     }
   }
 }
