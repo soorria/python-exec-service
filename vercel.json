@@ -5,6 +5,11 @@
       "destination": "/api"
     }
   ],
+  "functions": {
+    "api/index.ts": {
+      "maxDuration": 60
+    }
+  },
   "github": {
     "silent": true
   }
