@@ -6,7 +6,7 @@ import { runPythonCode } from './lib/python-execution/run-code'
 export function createApp() {
   const app = new Hono()
 
-  app.post('/v1/run-python-code', vValidator('json', runPythonCodeInputSchema), async (c, next) => {
+  app.post('/v1/run-python-code', vValidator('json', runPythonCodeInputSchema), async (c) => {
     const { result, timings } = await runPythonCode(c.req.valid('json'))
 
     return c.json({
