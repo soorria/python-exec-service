@@ -1,15 +1,16 @@
 import { PyProxy } from 'pyodide/ffi'
 import { loadPyodide } from 'pyodide'
 import { Timer, Timings } from '../utils/timer'
+import { RunPythonCodeInput } from './types'
 
-export async function runPythonCode(code: string): Promise<{
+export async function runPythonCode({ code }: RunPythonCodeInput): Promise<{
   result:
     | {
-        type: 'success'
+        status: 'success'
         data: unknown
       }
     | {
-        type: 'error'
+        status: 'error'
         error: unknown
       }
   timings: Timings
@@ -27,14 +28,14 @@ export async function runPythonCode(code: string): Promise<{
     timer.log('Ran python code')
 
     const result = extractAndFreeResult(resultProxy)
-    timer.log("extractAndFreeResult'd result")
+    timer.log('Extracted and freed result')
 
     validateResult(result)
     timer.log('Validated result')
 
     return {
       result: {
-        type: 'success',
+        status: 'success',
         data: result,
       },
       timings: timer.end(),
@@ -42,7 +43,7 @@ export async function runPythonCode(code: string): Promise<{
   } catch (e) {
     return {
       result: {
-        type: 'error',
+        status: 'error',
         error: e,
       },
       timings: timer.end(),

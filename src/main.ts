@@ -1,37 +1,14 @@
-import { runPythonCode } from './lib/python-execution/run-code'
+import { createApp } from './app'
+import { serve } from '@hono/node-server'
 
-async function main() {
-  const code = /* py */ `
-    import js
+const app = createApp()
 
-    print(dir(js))
-
-    js.a = 1
-
-    y = (1, 2)
-
-    x = {
-      "yo": {
-        "yo": {
-          "yo": 1
-        }
-      }
-    }
-
-    x['x'] = x
-
-    x
-  `
-
-  console.log('result', await runPythonCode(code))
-}
-
-void main()
-  .then(() => {
-    console.log('\n\n\nDone')
-    process.exit(0)
-  })
-  .catch((err) => {
-    console.error(err)
-    process.exit(1)
-  })
+serve(
+  {
+    fetch: app.fetch,
+    port: parseInt(process.env.PORT ?? '8000') || 8000,
+  },
+  (info) => {
+    console.log('Listening', info)
+  }
+)
