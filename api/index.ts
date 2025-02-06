@@ -1,5 +1,8 @@
 import { handle } from '@hono/node-server/vercel'
 import { createApp } from '../src/app'
-import { Hono } from 'hono'
+import { IncomingMessage, ServerResponse } from 'node:http'
 
-export default handle(new Hono().mount('/api', createApp().fetch))
+export default (req: IncomingMessage, res: ServerResponse) => {
+  console.log('Node request', req.url)
+  return handle(createApp().mount('/api', createApp().fetch))(req, res)
+}

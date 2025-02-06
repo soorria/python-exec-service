@@ -21,5 +21,18 @@ export function createApp() {
     })
   })
 
+  app.onError((err, c) => {
+    console.log(err)
+
+    return c.json(
+      {
+        name: err.name,
+        message: err.message,
+        stack: err.stack,
+      },
+      500
+    )
+  })
+
   return app
 }
